@@ -62,7 +62,7 @@ ifeq ($(NAME), )
 $(error NAME was not set, aborting)
 endif
 
-CC := /usr/bin/perl ~/.bin/colorgcc.pl #/usr/bin/clang
+CC := gcc #/usr/bin/perl ~/.bin/colorgcc.pl #/usr/bin/clang
 
 AR := ar #/usr/bin/ar
 
@@ -271,6 +271,7 @@ fclean: clean
 	@echo " ✔"
 
 re: fclean
+	@$(RM) .items
 	@$(MAKE) all
 
 auteur:
