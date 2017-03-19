@@ -14,7 +14,10 @@ LIB := $(MLIB) $(LIB)
 LARGS := $(MLARGS) $(LARGS)
 endif
 
+
 ifneq ($(VERBOSE), )
+
+SILENT :=
 
 ifeq ($(SRCDIR), )
 $(warning SRCDIR is not defined, setting it to default '.')
@@ -35,6 +38,10 @@ endif
 ifeq ($(ITEMS), )
 $(warning no items set, including .items)
 endif
+
+else
+
+SILENT := @
 
 endif
 
@@ -86,129 +93,127 @@ MAKE := $(MAKE) --no-print-directory -j
 all: dirs libs auteur $(NAME)
 
 help:
-	@printf "Makefile help by LIMachi\n\n\nmake [all] [$(NAME)] [help] [redep] " > .tmp
-	@printf "[items/.items] [norm] [test] [-j]\n    [VERBOSE=1] [clean] [fclean] " >> .tmp
-	@printf "[re] [grind] [hell] [libs] [relibs]\n    [cleanlibs] [fcleanlibs] [redeplibs] " >> .tmp
-	@printf "[normlibs] [auteur]\n\n" >> .tmp
-	@printf "all: default rule, compile all sub-libraries, prepare sub-directories, " >> .tmp
-	@printf "create\n    the auteur file and compile the executable/library " >> .tmp
-	@printf "targeted by the\n    variable NAME.\n\n" >> .tmp
-	@printf "$(NAME): same has all, exept it does not recompile sub-libraries\n" >> .tmp
-	@printf "    nor prepare sub-directores or the the auteur file\n\n" >> .tmp
-	@printf "help: show this help, duh\n\n" >> .tmp
-	@printf "redep: rebuld all rules/dependencies of the nakefile and store " >> .tmp
-	@printf "them in the\n    directory '$(DEPDIR)' (DEPDIR)\n\n" >> .tmp
-	@printf "items or .items: create the file .items containing the variable ITEMS " >> .tmp
-	@printf "used by\n    this makefile\n\n" >> .tmp
-	@printf "norm: call the variable NORMINETTE (default = norminette) on all " >> .tmp
-	@printf "sources and\n    includes\n\n" >> .tmp
-	@printf "test: execute the executable with the default arguments EXEARGS, " >> .tmp
-	@printf "the executable\n    is built with MAIN if NAME is a library\n\n" >> .tmp
-	@printf "VERBOSE=1: show some debug information\n\n" >> .tmp
-	@printf "clean: remove all object (.o) files in '$(OBJDIR)' (OBJDIR), then " >> .tmp
-	@printf "remove the\n    directory if it is empty. Additionaly removes " >> .tmp
-	@printf "test.bin if the command test\n    was used on a library\n\n" >> .tmp
-	@printf "fclean: same has clean, but also remove the library/executable\n\n" >> .tmp
-	@printf "re: performs a fclean then a all (rebuild the executable/library)\n\n" >> .tmp
-	@printf "grind: same has test, but also call valgrind and shows the output in less\n\n" >> .tmp
-	@printf "hell: same has grind, but with advanced (slow) options passed to valgrind (NI)\n\n" >> .tmp
-	@printf "libs/redeplibs/cleanlibs/fcleanlibs/relibs/normlibs: calls make with\n" >> .tmp
-	@printf "respectively the rules all, redep, clean, fclean, re, norm\n\n" >> .tmp
-	@printf "auteur: create an auteur file containing '$(AUTHOR)' (AUTHOR)\n\n\n" >> .tmp
-	@printf "Variables and use:\n" >> .tmp
-	@printf "  AUTHOR: (= $(AUTHOR)) name of the author(s) in echo format\n" >> .tmp
-	@printf "  NAME: (= $(NAME)) name of the executable/library, the extension is\n" >> .tmp
-	@printf "    used to determine the way the Makefile will behave in certain rules\n" >> .tmp
-	@printf "  EXEARGS: (= $(EXEARGS)) arguments passed to the executable in the rule test\n" >> .tmp
-	@printf "  SRCDIR: (= $(SRCDIR)) path to all source file (source files are searched\n" >> .tmp
-	@printf "    relative to this path)\n" >> .tmp
-	@printf "  INCDIRS: (= $(INCDIRS)) same has SRCDIR for includes, can contain multpile paths\n" >> .tmp
-	@printf "  OBJDIR: (= $(OBJDIR)) same has SRCDIR for object files (.o)\n" >> .tmp
-	@printf "  DEPDIR: (= $(DEPDIR)) same has SRCDIR for rules/dependencies files (.d)\n" >> .tmp
-	@printf "  MAIN: (=$(MAIN)) path to a main function containing file (used to test the\n" >> .tmp
-	@printf "    library)\n" >> .tmp
-	@printf "  ITEMS: (.items file) path to sources relative to '$(SRCDIR)' (SRCDIR), with no\n" >> .tmp
-	@printf "    extensions\n" >> .tmp
-	@printf "  CFLAGS: (= $(CFLAGS)) compilation flags to be passed to\n" >> .tmp
-	@printf "    the compiler\n" >> .tmp
-	@printf "  PINC: (= $(PINC)) same has INCDIRS, usually used for extern includes\n" >> .tmp
-	@printf "  CLIB: (= $(CLIB)) path to libraries that need to be compiled (path to\n" >> .tmp
-	@printf "    the directory containing the makefiles of said libraries)\n" >> .tmp
-	@printf "  LIB: (= $(LIB)) path to the libraries that need to be included\n" >> .tmp
-	@printf "  LARGS: (= $(LARGS)) linkage flags to be passe to the linker\n" >> .tmp
-	@printf "  LCFLAGS/LPINC/LCLIB/LLIB/LLARGS: same has CFLAGS/PINC/CLIB/LIB/LARGS, but will\n" >> .tmp
-	@printf "    only be used on linux\n" >> .tmp
-	@printf "  MCFLAGS/MPINC/MCLIB/MLIB/MLARGS: same has above, but for mac\n" >> .tmp
-	@printf "  VERBOSE: (= $(VERBOSE)) determine the way debug is displayed\n\n\n" >> .tmp
-	@printf "Other variables can be found in Makefile.gen and are not explained here\n\n\n" >> .tmp
-	@printf "Example of a valid Makefile:\n\n" >> .tmp
-	@printf "AUTHOR := hmartzol\nNAME := libftprintf.a\nSRCDIR := src\nINCDIRS := inc\n" >> .tmp
-	@printf "MAIN := main.c\nCFLAGS := -Wall -Wextra -Werror -g\nPINC := ../libft/inc\n" >> .tmp
-	@printf "CLIB := ../libft\nLIB := ../libft/libft.a\ninclude ../Makefiles/Makefile.gen\n\n" >> .tmp
-	@printf "in this example, some variables are unset, Makefile.gen will generate them" >> .tmp
-	@less .tmp
-	@$(RM) .tmp
+	$(SILENT)printf "Makefile help by LIMachi\n\n\nmake [all] [$(NAME)] [help] [redep] " > .tmp
+	$(SILENT)printf "[items/.items] [norm] [test] [-j]\n    [VERBOSE=1] [clean] [fclean] " >> .tmp
+	$(SILENT)printf "[re] [grind] [hell] [libs] [relibs]\n    [cleanlibs] [fcleanlibs] [redeplibs] " >> .tmp
+	$(SILENT)printf "[normlibs] [auteur]\n\n" >> .tmp
+	$(SILENT)printf "all: default rule, compile all sub-libraries, prepare sub-directories, " >> .tmp
+	$(SILENT)printf "create\n    the auteur file and compile the executable/library " >> .tmp
+	$(SILENT)printf "targeted by the\n    variable NAME.\n\n" >> .tmp
+	$(SILENT)printf "$(NAME): same has all, exept it does not recompile sub-libraries\n" >> .tmp
+	$(SILENT)printf "    nor prepare sub-directores or the the auteur file\n\n" >> .tmp
+	$(SILENT)printf "help: show this help, duh\n\n" >> .tmp
+	$(SILENT)printf "redep: rebuld all rules/dependencies of the nakefile and store " >> .tmp
+	$(SILENT)printf "them in the\n    directory '$(DEPDIR)' (DEPDIR)\n\n" >> .tmp
+	$(SILENT)printf "items or .items: create the file .items containing the variable ITEMS " >> .tmp
+	$(SILENT)printf "used by\n    this makefile\n\n" >> .tmp
+	$(SILENT)printf "norm: call the variable NORMINETTE (default = norminette) on all " >> .tmp
+	$(SILENT)printf "sources and\n    includes\n\n" >> .tmp
+	$(SILENT)printf "test: execute the executable with the default arguments EXEARGS, " >> .tmp
+	$(SILENT)printf "the executable\n    is built with MAIN if NAME is a library\n\n" >> .tmp
+	$(SILENT)printf "VERBOSE=1: show some debug information\n\n" >> .tmp
+	$(SILENT)printf "clean: remove all object (.o) files in '$(OBJDIR)' (OBJDIR), then " >> .tmp
+	$(SILENT)printf "remove the\n    directory if it is empty. Additionaly removes " >> .tmp
+	$(SILENT)printf "test.bin if the command test\n    was used on a library\n\n" >> .tmp
+	$(SILENT)printf "fclean: same has clean, but also remove the library/executable\n\n" >> .tmp
+	$(SILENT)printf "re: performs a fclean then a all (rebuild the executable/library)\n\n" >> .tmp
+	$(SILENT)printf "grind: same has test, but also call valgrind and shows the output in less\n\n" >> .tmp
+	$(SILENT)printf "hell: same has grind, but with advanced (slow) options passed to valgrind (NI)\n\n" >> .tmp
+	$(SILENT)printf "libs/redeplibs/cleanlibs/fcleanlibs/relibs/normlibs: calls make with\n" >> .tmp
+	$(SILENT)printf "respectively the rules all, redep, clean, fclean, re, norm\n\n" >> .tmp
+	$(SILENT)printf "auteur: create an auteur file containing '$(AUTHOR)' (AUTHOR)\n\n\n" >> .tmp
+	$(SILENT)printf "Variables and use:\n" >> .tmp
+	$(SILENT)printf "  AUTHOR: (= $(AUTHOR)) name of the author(s) in echo format\n" >> .tmp
+	$(SILENT)printf "  NAME: (= $(NAME)) name of the executable/library, the extension is\n" >> .tmp
+	$(SILENT)printf "    used to determine the way the Makefile will behave in certain rules\n" >> .tmp
+	$(SILENT)printf "  EXEARGS: (= $(EXEARGS)) arguments passed to the executable in the rule test\n" >> .tmp
+	$(SILENT)printf "  SRCDIR: (= $(SRCDIR)) path to all source file (source files are searched\n" >> .tmp
+	$(SILENT)printf "    relative to this path)\n" >> .tmp
+	$(SILENT)printf "  INCDIRS: (= $(INCDIRS)) same has SRCDIR for includes, can contain multpile paths\n" >> .tmp
+	$(SILENT)printf "  OBJDIR: (= $(OBJDIR)) same has SRCDIR for object files (.o)\n" >> .tmp
+	$(SILENT)printf "  DEPDIR: (= $(DEPDIR)) same has SRCDIR for rules/dependencies files (.d)\n" >> .tmp
+	$(SILENT)printf "  MAIN: (=$(MAIN)) path to a main function containing file (used to test the\n" >> .tmp
+	$(SILENT)printf "    library)\n" >> .tmp
+	$(SILENT)printf "  ITEMS: (.items file) path to sources relative to '$(SRCDIR)' (SRCDIR), with no\n" >> .tmp
+	$(SILENT)printf "    extensions\n" >> .tmp
+	$(SILENT)printf "  CFLAGS: (= $(CFLAGS)) compilation flags to be passed to\n" >> .tmp
+	$(SILENT)printf "    the compiler\n" >> .tmp
+	$(SILENT)printf "  PINC: (= $(PINC)) same has INCDIRS, usually used for extern includes\n" >> .tmp
+	$(SILENT)printf "  CLIB: (= $(CLIB)) path to libraries that need to be compiled (path to\n" >> .tmp
+	$(SILENT)printf "    the directory containing the makefiles of said libraries)\n" >> .tmp
+	$(SILENT)printf "  LIB: (= $(LIB)) path to the libraries that need to be included\n" >> .tmp
+	$(SILENT)printf "  LARGS: (= $(LARGS)) linkage flags to be passe to the linker\n" >> .tmp
+	$(SILENT)printf "  LCFLAGS/LPINC/LCLIB/LLIB/LLARGS: same has CFLAGS/PINC/CLIB/LIB/LARGS, but will\n" >> .tmp
+	$(SILENT)printf "    only be used on linux\n" >> .tmp
+	$(SILENT)printf "  MCFLAGS/MPINC/MCLIB/MLIB/MLARGS: same has above, but for mac\n" >> .tmp
+	$(SILENT)printf "  VERBOSE: (= $(VERBOSE)) determine the way debug is displayed\n\n\n" >> .tmp
+	$(SILENT)printf "Other variables can be found in Makefile.gen and are not explained here\n\n\n" >> .tmp
+	$(SILENT)printf "Example of a valid Makefile:\n\n" >> .tmp
+	$(SILENT)printf "AUTHOR := hmartzol\nNAME := libftprintf.a\nSRCDIR := src\nINCDIRS := inc\n" >> .tmp
+	$(SILENT)printf "MAIN := main.c\nCFLAGS := -Wall -Wextra -Werror -g\nPINC := ../libft/inc\n" >> .tmp
+	$(SILENT)printf "CLIB := ../libft\nLIB := ../libft/libft.a\ninclude ../Makefiles/Makefile.gen\n\n" >> .tmp
+	$(SILENT)printf "in this example, some variables are unset, Makefile.gen will generate them" >> .tmp
+	$(SILENT)less .tmp
+	$(SILENT)$(RM) .tmp
 
 redep:
-	@printf "rebuilding dependencies/rules:\n"
-	@$(RM) $(DOTD)
-	@if [ -z "$$(find $(DEPDIR) -type f)" ]; then $(RM) -r $(DEPDIR); fi
-	@$(MAKE) -s $(DOTD)
-	@printf "\nall dependencies/rules have been rebuilt\n"
+	$(SILENT)printf "rebuilding dependencies/rules:\n"
+	$(SILENT)$(RM) $(DOTD)
+	$(SILENT)if [ -z "$$(find $(DEPDIR) -type f)" ]; then $(RM) -r $(DEPDIR); fi
+	$(SILENT)$(MAKE) -s $(DOTD)
+	$(SILENT)printf "\nall dependencies/rules have been rebuilt\n"
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.c
-	@printf "."
-	@mkdir -p $(DEPDIR) $(patsubst %, $(DEPDIR)/%, $(shell find $(SRCDIR) -type d -not -path $(SRCDIR) | grep -v -F $(DEPDIR) | cut -f2- -d/)) >/dev/null
+	$(SILENT)printf "."
+	$(SILENT)mkdir -p $(DEPDIR) $(patsubst %, $(DEPDIR)/%, $(shell find $(SRCDIR) -type d -not -path $(SRCDIR) | grep -v -F $(DEPDIR) | cut -f2- -d/)) >/dev/null
 ifeq ($(SRCDIR), )
-	@$(CC) -M -MT $(patsubst %.c, $(OBJDIR)/%.o, $<) $(INCLUDES) $< > $@
-	@printf "\t@printf 'o'\n\t@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(patsubst %.c, $(OBJDIR)/%.o, $<)\n\t@printf '\\" >> $@
-	@printf "b✔'" >> $@
+	$(SILENT)$(CC) -M -MT $(patsubst %.c, $(OBJDIR)/%.o, $<) $(INCLUDES) $< > $@
+	$(SILENT)printf "\t$$""(SILENT)printf 'o'\n\t$$""(SILENT)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(patsubst %.c, $(OBJDIR)/%.o, $<)\n\t$$""(SILENT)printf '\\" >> $@
 else
 ifeq ($(SRCDIR), .)
-	@$(CC) -M -MT $(patsubst %.c, $(OBJDIR)/%.o, $<) $(INCLUDES) $< > $@
-	@printf "\t@printf 'o'\n\t@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(patsubst %.c, $(OBJDIR)/%.o, $<)\n\t@printf '\\" >> $@
-	@printf "b✔'" >> $@
+	$(SILENT)$(CC) -M -MT $(patsubst %.c, $(OBJDIR)/%.o, $<) $(INCLUDES) $< > $@
+	$(SILENT)printf "\t$$""(SILENT)printf 'o'\n\t$$""(SILENT)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(patsubst %.c, $(OBJDIR)/%.o, $<)\n\t$$""(SILENT)printf '\\" >> $@
 else
-	@$(CC) -M -MT $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $<) $(INCLUDES) $< > $@
-	@printf "\t@printf 'o'\n\t@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $<)\n\t@printf '\\" >> $@
-	@printf "b✔'" >> $@
+	$(SILENT)$(CC) -M -MT $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $<) $(INCLUDES) $< > $@
+	$(SILENT)printf "\t$$""(SILENT)printf 'o'\n\t$$""(SILENT)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $<)\n\t$$""(SILENT)printf '\\" >> $@
 endif
 endif
-	@printf "\b✔"
+	$(SILENT)printf "b✔'" >> $@
+	$(SILENT)printf "\b✔"
 
 ifneq ("$(CLIB)", " ")
 
 libs:
 ifneq ($(shell [[ 0 = 0$(patsubst %, && `$(MAKE) -q -C %; echo $$?` = 0, $(CLIB)) ]]; echo $$?), 0)
-	@echo "rebuilding needed static libraries"
-	@$(foreach V, $(CLIB), $(MAKE) -C $(V);)
-	@echo "all needed static libraries have been rebuilt"
+	$(SILENT)echo "rebuilding needed static libraries"
+	$(SILENT)$(foreach V, $(CLIB), $(MAKE) -C $(V);)
+	$(SILENT)echo "all needed static libraries have been rebuilt"
 endif
 
 relibs:
-	@echo "rebuilding needed static libraries"
-	@$(foreach V, $(CLIB), $(MAKE) re -C $(V);)
-	@echo "all needed static libraries have been rebuilt"
-	@$(MAKE) re
+	$(SILENT)echo "rebuilding needed static libraries"
+	$(SILENT)$(foreach V, $(CLIB), $(MAKE) re -C $(V);)
+	$(SILENT)echo "all needed static libraries have been rebuilt"
+	$(SILENT)$(MAKE) re
 
 fcleanlibs: fclean
-	@echo "fclean-ing all static libraries"
-	@$(foreach V, $(CLIB), $(MAKE) fclean -C $(V);)
-	@echo "all static libraries have been fclean-ed"
+	$(SILENT)echo "fclean-ing all static libraries"
+	$(SILENT)$(foreach V, $(CLIB), $(MAKE) fclean -C $(V);)
+	$(SILENT)echo "all static libraries have been fclean-ed"
 
 cleanlibs: clean
-	@echo "cleaning all static libraries"
-	@$(foreach V, $(CLIB), $(MAKE) clean -C $(V);)
-	@echo "all static libraries have been cleaned"
+	$(SILENT)echo "cleaning all static libraries"
+	$(SILENT)$(foreach V, $(CLIB), $(MAKE) clean -C $(V);)
+	$(SILENT)echo "all static libraries have been cleaned"
 
 redeplibs:
-	@echo "rebuilding dependencies/rules of all static libraries"
-	@$(foreach V, $(CLIB), $(MAKE) redep -C $(V);)
-	@echo "all dependencies/rules of all static libraries have been rebuilt"
+	$(SILENT)echo "rebuilding dependencies/rules of all static libraries"
+	$(SILENT)$(foreach V, $(CLIB), $(MAKE) redep -C $(V);)
+	$(SILENT)echo "all dependencies/rules of all static libraries have been rebuilt"
 
 normlibs:
 ifneq ($(NORMINETTE), )
-	@$(foreach V, $(CLIB), $(MAKE) norm -C $(V);)
+	$(SILENT)$(foreach V, $(CLIB), $(MAKE) norm -C $(V);)
 endif
 
 else
@@ -232,8 +237,8 @@ ifneq ($(OBJDIR), )
 SUBDIRS = $(patsubst %, $(OBJDIR)/%, $(shell find $(SRCDIR) -type d -not -path $(SRCDIR) | grep -v -F $(OBJDIR) | cut -f2- -d/))
 dirs:
 ifeq ($(shell [[ -d $(OBJDIR) $(patsubst %, && -d %, $(SUBDIRS)) ]]; echo $$?), 1)
-	@mkdir -p $(OBJDIR) $(SUBDIRS)
-	@printf "\nmade directory '$(OBJDIR)' to hold temporary object files\n"
+	$(SILENT)mkdir -p $(OBJDIR) $(SUBDIRS)
+	$(SILENT)printf "\nmade directory '$(OBJDIR)' to hold temporary object files\n"
 endif
 else
 
@@ -243,53 +248,53 @@ endif
 
 $(NAME): $(DOTO) $(LIB)
 ifeq ($(suffix $(NAME)), .a)
-	@printf "\nlinking the library '$(NAME)'"
-	@$(AR) -rc $(NAME) $(DOTO) $(LIB)
-	@$(RANLIB) $(NAME)
-	@echo " ✔"
+	$(SILENT)printf "\nlinking the library '$(NAME)'"
+	$(SILENT)$(AR) -rc $(NAME) $(DOTO) $(LIB)
+	$(SILENT)$(RANLIB) $(NAME)
+	$(SILENT)echo " ✔"
 else
-	@printf "\ncompiling executable '$(NAME)'"
-	@$(CC) $(CFLAGS) $(LARGS) $(INCLUDES) $(DOTO) $(LIB) -o $(NAME)
-	@echo " ✔"
+	$(SILENT)printf "\ncompiling executable '$(NAME)'"
+	$(SILENT)$(CC) $(CFLAGS) $(LARGS) $(INCLUDES) $(DOTO) $(LIB) -o $(NAME)
+	$(SILENT)echo " ✔"
 endif
 
 include $(DOTD)
 
 clean:
-	@printf "cleaning objects"
-	@$(RM) $(DOTO)
+	$(SILENT)printf "cleaning objects"
+	$(SILENT)$(RM) $(DOTO)
 ifeq ($(suffix $(NAME)), .a)
-	@printf " ✔\ncleaning test.bin"
-	@$(RM) test.bin
+	$(SILENT)printf " ✔\ncleaning test.bin"
+	$(SILENT)$(RM) test.bin
 endif
-	@printf " ✔\ncleaning '$(OBJDIR)'"
-	@if [ -z "$$(find $(OBJDIR) -type f)" ]; then $(RM) -r $(OBJDIR); echo " ✔"; else echo echo " failure, '$(OBJDIR)' was not empty"; fi
+	$(SILENT)printf " ✔\ncleaning '$(OBJDIR)'"
+	$(SILENT)if [ -z "$$(find $(OBJDIR) -type f)" ]; then $(RM) -r $(OBJDIR); echo " ✔"; else echo echo " failure, '$(OBJDIR)' was not empty"; fi
 
 fclean: clean
-	@printf "cleaning '$(NAME)'"
-	@$(RM) $(NAME)
-	@echo " ✔"
+	$(SILENT)printf "cleaning '$(NAME)'"
+	$(SILENT)$(RM) $(NAME)
+	$(SILENT)echo " ✔"
 
 re: fclean
-	@$(RM) .items
-	@$(MAKE) all
+	$(SILENT)$(RM) .items
+	$(SILENT)$(MAKE) all
 
 auteur:
 ifneq ($(AUTHOR), )
-	@echo $(AUTHOR) > auteur
+	$(SILENT)echo $(AUTHOR) > auteur
 endif
 
 norm:
 ifneq ($(NORMINETTE), )
-	@$(NORMINETTE) $(DOTC)
-	@$(NORMINETTE) $(INCDIRS)
+	$(SILENT)$(NORMINETTE) $(DOTC)
+	$(SILENT)$(NORMINETTE) $(INCDIRS)
 endif
 
 .items:
-	@printf "ITEMS = " > .tmp;
-	@$(foreach V, $(shell find $(SRCDIR) -type f | grep "\.c" | rev | cut -f2- -d. | rev | cut -f2- -d/), echo "	$(V) \\" >> .tmp;)
-	@sed -e '$$s/..$$//' .tmp 2> /dev/null > .items
-	@$(RM) .tmp
+	$(SILENT)printf "ITEMS = " > .tmp;
+	$(SILENT)$(foreach V, $(shell find $(SRCDIR) -type f | grep "\.c" | rev | cut -f2- -d. | rev | cut -f2- -d/), echo "	$(V) \\" >> .tmp;)
+	$(SILENT)sed -e '$$s/..$$//' .tmp 2> /dev/null > .items
+	$(SILENT)$(RM) .tmp
 
 items: .items
 
@@ -297,10 +302,10 @@ ifeq ($(suffix $(NAME)), .a)
 
 test.bin: all $(MAIN)
 ifneq ($(MAIN), )
-	@$(CC) $(MAIN) $(LARGS) $(INCLUDES) $(NAME) $(LIB) -o test.bin
-	@echo "built test.bin for testing purpose"
+	$(SILENT)$(CC) $(MAIN) $(LARGS) $(INCLUDES) $(NAME) $(LIB) -o test.bin
+	$(SILENT)echo "built test.bin for testing purpose"
 else
-	@echo "main function containing file was not set"
+	$(SILENT)echo "main function containing file was not set"
 endif
 
 test: test.bin
