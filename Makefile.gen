@@ -96,14 +96,13 @@ help:
 	$(SILENT)printf "Makefile help by LIMachi\n\n\nmake [all] [$(NAME)] [help] [redep] " > .tmp
 	$(SILENT)printf "[items/.items] [norm] [test] [-j]\n    [VERBOSE=1] [clean] [fclean] " >> .tmp
 	$(SILENT)printf "[re] [grind] [hell] [libs] [relibs]\n    [cleanlibs] [fcleanlibs] [redeplibs] " >> .tmp
-	$(SILENT)printf "[normlibs] [auteur]\n\n" >> .tmp
+	$(SILENT)printf "[normlibs] [auteur] [reitems]\n\n" >> .tmp
 	$(SILENT)printf "all: default rule, compile all sub-libraries, prepare sub-directories, " >> .tmp
 	$(SILENT)printf "create\n    the auteur file and compile the executable/library " >> .tmp
 	$(SILENT)printf "targeted by the\n    variable NAME.\n\n" >> .tmp
-	$(SILENT)printf "$(NAME): same has all, exept it does not recompile sub-libraries\n" >> .tmp
-	$(SILENT)printf "    nor prepare sub-directores or the the auteur file\n\n" >> .tmp
+	$(SILENT)printf "$(NAME): compile the executable/library\n" >> .tmp
 	$(SILENT)printf "help: show this help, duh\n\n" >> .tmp
-	$(SILENT)printf "redep: rebuld all rules/dependencies of the nakefile and store " >> .tmp
+	$(SILENT)printf "redep: rebuild all rules/dependencies of the makefile and store " >> .tmp
 	$(SILENT)printf "them in the\n    directory '$(DEPDIR)' (DEPDIR)\n\n" >> .tmp
 	$(SILENT)printf "items or .items: create the file .items containing the variable ITEMS " >> .tmp
 	$(SILENT)printf "used by\n    this makefile\n\n" >> .tmp
@@ -121,7 +120,12 @@ help:
 	$(SILENT)printf "hell: same has grind, but with advanced (slow) options passed to valgrind (NI)\n\n" >> .tmp
 	$(SILENT)printf "libs/redeplibs/cleanlibs/fcleanlibs/relibs/normlibs: calls make with\n" >> .tmp
 	$(SILENT)printf "respectively the rules all, redep, clean, fclean, re, norm\n\n" >> .tmp
-	$(SILENT)printf "auteur: create an auteur file containing '$(AUTHOR)' (AUTHOR)\n\n\n" >> .tmp
+	$(SILENT)printf "auteur: create an auteur file containing '$(AUTHOR)' (AUTHOR)\n\n" >> .tmp
+	$(SILENT)printf "reitems: remove the file .items and rebuild it by calling the rule items\n\n\n" >> .tmp
+	$(SILENT)printf "The Makefile may fail if the files in '$(DEPDIR)' (DEPDIR) are not built correctly\n" >> .tmp
+	$(SILENT)printf "in such case, please use 'rm -r $(DEPDIR)' before next make call\n" >> .tmp
+	$(SILENT)printf "The Makefile might also fail if it includes the .item file and new files have\n" >> .tmp
+	$(SILENT)printf "been added or removed, in such case, please use 'make reitems'\n\n\n" >> .tmp
 	$(SILENT)printf "Variables and use:\n" >> .tmp
 	$(SILENT)printf "  AUTHOR: (= $(AUTHOR)) name of the author(s) in echo format\n" >> .tmp
 	$(SILENT)printf "  NAME: (= $(NAME)) name of the executable/library, the extension is\n" >> .tmp
@@ -258,17 +262,19 @@ else
 	$(SILENT)echo " ✔"
 endif
 
-include $(DOTD)
+-include $(DOTD)
 
 clean:
-	$(SILENT)printf "cleaning objects"
+	$(SILENT)printf "cleaning log files"
+	$(SILENT)$(RM) valgrind.log
+	$(SILENT)$(RM) log.txt
+	$(SILENT)printf " ✔\ncleaning objects"
 	$(SILENT)$(RM) $(DOTO)
+	$(SILENT)printf " ✔\n"
 ifeq ($(suffix $(NAME)), .a)
-	$(SILENT)printf " ✔\ncleaning test.bin"
-	$(SILENT)$(RM) test.bin
+	$(SILENT)if [ -f test.bin ]; then printf "cleaning test.bin"; $(RM) test.bin; printf " ✔\n"; fi
 endif
-	$(SILENT)printf " ✔\ncleaning '$(OBJDIR)'"
-	$(SILENT)if [ -z "$$(find $(OBJDIR) -type f)" ]; then $(RM) -r $(OBJDIR); echo " ✔"; else echo echo " failure, '$(OBJDIR)' was not empty"; fi
+	$(SILENT)if [ -d $(OBJDIR) ]; then printf "ncleaning '$(OBJDIR)'"; if [ -z "$$(find $(OBJDIR) -type f)" ]; then $(RM) -r $(OBJDIR); printf " ✔\n"; else printf " failure, '$(OBJDIR)' was not empty\n"; fi; fi
 
 fclean: clean
 	$(SILENT)printf "cleaning '$(NAME)'"
@@ -276,7 +282,6 @@ fclean: clean
 	$(SILENT)echo " ✔"
 
 re: fclean
-	$(SILENT)$(RM) .items
 	$(SILENT)$(MAKE) all
 
 auteur:
@@ -298,6 +303,11 @@ endif
 
 items: .items
 
+cleanitems:
+	$(SILENT)$(RM) .items
+
+reitems: cleanitems items redep
+
 ifeq ($(suffix $(NAME)), .a)
 
 test.bin: all $(MAIN)
@@ -312,7 +322,8 @@ test: test.bin
 	./test.bin $(EXEARGS)
 
 grind: test.bin
-	valgrind ./test.bin $(EXEARGS)
+	$(SILENT)valgrind ./test.bin $(EXEARGS) > valgrind.log 2> valgrind.log
+	$(SILENT)less valgrind.log
 else
 
 test: all
