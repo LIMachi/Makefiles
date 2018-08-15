@@ -1,4 +1,5 @@
 ifeq ($(shell uname),Linux)
+SHELL := /bin/bash
 CFLAGS := $(LCFLAGS) $(CFLAGS)
 PINC := $(LPINC) $(PINC)
 CLIB := $(LCLIB) $(CLIB)
@@ -7,6 +8,7 @@ LARGS := $(LLARGS) $(LARGS)
 endif
 
 ifeq ($(shell uname),Darwin)
+SHELL := /bin/bash
 CFLAGS := $(MCFLAGS) $(CFLAGS)
 PINC := $(MPINC) $(PINC)
 CLIB := $(MCLIB) $(CLIB)
@@ -85,7 +87,7 @@ DOTD := $(patsubst %, $(DEPDIR)/%.d, $(ITEMS))
 
 INCLUDES := $(patsubst %, -I%, $(INCDIRS)) $(patsubst %, -I%, $(PINC))
 
-MAKE := $(MAKE) --no-print-directory -j
+MAKE := $(MAKE) --no-print-directory #-j
 
 .PRECIOUS: $(DOTD) .items auteur
 .SUFFIXES:
