@@ -1,19 +1,19 @@
 ifeq ($(shell uname),Linux)
 SHELL := /bin/bash
-CFLAGS := $(LCFLAGS) $(CFLAGS)
+CFLAGS := $(LCFLAGS) $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer
 PINC := $(LPINC) $(PINC)
 CLIB := $(LCLIB) $(CLIB)
 LIB := $(LLIB) $(LIB)
-LARGS := $(LLARGS) $(LARGS)
+LARGS := $(LLARGS) $(LARGS) -fsanitize=address
 endif
 
 ifeq ($(shell uname),Darwin)
 SHELL := /bin/bash
-CFLAGS := $(MCFLAGS) $(CFLAGS)
+CFLAGS := $(MCFLAGS) $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer
 PINC := $(MPINC) $(PINC)
 CLIB := $(MCLIB) $(CLIB)
 LIB := $(MLIB) $(LIB)
-LARGS := $(MLARGS) $(LARGS)
+LARGS := $(MLARGS) $(LARGS) -fsanitize=address
 endif
 
 
@@ -71,7 +71,7 @@ ifeq ($(NAME), )
 $(error NAME was not set, aborting)
 endif
 
-CC := gcc #/usr/bin/perl ~/.bin/colorgcc.pl #/usr/bin/clang
+CC := clang #gcc #/usr/bin/perl ~/.bin/colorgcc.pl #/usr/bin/clang
 
 AR := ar #/usr/bin/ar
 
