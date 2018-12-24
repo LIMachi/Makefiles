@@ -71,7 +71,7 @@ ifeq ($(NAME), )
 $(error NAME was not set, aborting)
 endif
 
-CC := clang #gcc #/usr/bin/perl ~/.bin/colorgcc.pl #/usr/bin/clang
+CC := gcc #gcc #/usr/bin/perl ~/.bin/colorgcc.pl #/usr/bin/clang
 
 AR := ar #/usr/bin/ar
 
