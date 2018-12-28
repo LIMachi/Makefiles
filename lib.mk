@@ -1,7 +1,25 @@
-CFLAGS += -Iinc -Wall -Wextra -Werror
+.DEFAULT_GOAL := all
+
+UNAME := $(shell uname)
+
+CFLAGS += -Wall -Wextra -Werror $($(UNAME)_CFLAGS)
+LDFLAGS += $($(UNAME)_LDFLAGS)
+SRCS += $($(UNAME)_SRCS)
+TEST_SRCS += $($(UNAME)_TEST_SRCS)
+
+ifneq ($($(UNAME)_CC), )
+CC := $($(UNAME)_CC)
+endif
+
+ifneq ($($(UNAME)_LD), )
+LD := $($(UNAME)_LD)
+endif
+
+ifneq ($($(UNAME)_AR), )
+AR := $($(UNAME)_AR)
+endif
 
 OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
-
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
 ifneq ($(DEBUG), )
@@ -11,7 +29,7 @@ endif
 
 ifneq ($(SANITIZE), )
 CFLAGS += -g -fsanitize=address
-LDLIBS += -fsanitize=address
+LDFLAGS += -fsanitize=address
 endif
 
 #if neither DEBUG nor SANITIZE is set
@@ -33,9 +51,9 @@ $(NAME): $(OBJS)
 	@echo Adding objects to archive $@:
 	@$(AR) $(ARFLAGS) $@ $?
 
-test.bin: $(TEST_OBJS) | $(NAME) $(CLIB)
+test.bin: $(TEST_OBJS) | $(NAME) $(CLIB) $(LDLIBS)
 	@echo Preparing temporary executable test.bin
-	@$(CC) $(LDFLAGS) $^ $| $(LDLIBS) -o $@
+	@$(LD) $^ $| $(LDFLAGS) -o $@
 
 $(OBJ_DIR)/.:
 	@echo Preparing $(OBJ_DIR) to hold object files
@@ -77,7 +95,11 @@ FORCE:
 
 %.h:
 
+%: FORCE
+	@echo $@
+
 .SECONDEXPANSION:
+
 ifneq ($(CLIB), )
 $(CLIB): $$(strip $$(call libraries,$$(@D)))
 	@echo Sub-library $@ needs rebuild

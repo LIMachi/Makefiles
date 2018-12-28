@@ -1,3 +1,7 @@
+ifeq ($(shell uname),Windows NT)
+$(error 'Windows is not suported yet :(')
+endif
+
 ifeq ($(shell uname),Linux)
 SHELL := /bin/bash
 CFLAGS := $(LCFLAGS) $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer
