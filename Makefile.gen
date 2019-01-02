@@ -4,20 +4,20 @@ endif
 
 ifeq ($(shell uname),Linux)
 SHELL := /bin/bash
-CFLAGS := $(LCFLAGS) $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer
+CFLAGS := $(LCFLAGS) $(CFLAGS)
 PINC := $(LPINC) $(PINC)
 CLIB := $(LCLIB) $(CLIB)
 LIB := $(LLIB) $(LIB)
-LARGS := $(LLARGS) $(LARGS) -fsanitize=address
+LARGS := $(LLARGS) $(LARGS)
 endif
 
 ifeq ($(shell uname),Darwin)
 SHELL := /bin/bash
-CFLAGS := $(MCFLAGS) $(CFLAGS) -fsanitize=address -fno-omit-frame-pointer
+CFLAGS := $(MCFLAGS) $(CFLAGS)
 PINC := $(MPINC) $(PINC)
 CLIB := $(MCLIB) $(CLIB)
 LIB := $(MLIB) $(LIB)
-LARGS := $(MLARGS) $(LARGS) -fsanitize=address
+LARGS := $(MLARGS) $(LARGS)
 endif
 
 

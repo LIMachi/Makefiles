@@ -19,6 +19,17 @@ ifneq ($($(UNAME)_AR), )
 AR := $($(UNAME)_AR)
 endif
 
+ifeq ($(SRCS), )
+$(warning no SRCS set, including .srcs)
+include .srcs
+endif
+
+.srcs:
+	echo "SRCS = \\" > .tmp
+	$(foreach V, $(shell find . -type f | grep "\.c$$" | cut -f2- -d/), echo "	$(V) \\" >> .tmp;)
+	cat .tmp $(foreach V, $(TEST_SRCS), | grep -v "$(V)") $(foreach V, $(BLACK_LIST_DIR), | grep -v "$(V)") > .srcs
+	rm .tmp
+
 OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
@@ -51,7 +62,7 @@ $(NAME): $(OBJS)
 	@echo Adding objects to archive $@:
 	@$(AR) $(ARFLAGS) $@ $?
 
-test.bin: $(TEST_OBJS) | $(NAME) $(CLIB) $(LDLIBS)
+test.bin: $(TEST_OBJS) $(NAME) | $(CLIB) $(LDLIBS)
 	@echo Preparing temporary executable test.bin
 	@$(LD) $^ $| $(LDFLAGS) -o $@
 
