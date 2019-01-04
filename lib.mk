@@ -25,10 +25,8 @@ include .srcs
 endif
 
 .srcs:
-	echo "SRCS = \\" > .tmp
-	$(foreach V, $(shell find . -type f | grep "\.c$$" | cut -f2- -d/), echo "	$(V) \\" >> .tmp;)
-	cat .tmp $(foreach V, $(TEST_SRCS), | grep -v "$(V)") $(foreach V, $(BLACK_LIST_DIR), | grep -v "$(V)") > .srcs
-	rm .tmp
+	printf "SRCS = " > .srcs
+	find . -type f | grep "\.c$$" | cut -f2- -d/ | sed "s/^/\t\'/" | sed "s/$$/\' \\\\/" $(foreach V, $(TEST_SRCS), | grep -v "'$(V)'") $(foreach V, $(BLACK_LIST_DIR), | grep -v "$(V)") | sed "1s/^.//" | sed "$$ s/..$$//" >> .srcs
 
 OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
