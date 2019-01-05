@@ -5,4 +5,4 @@ TEST_SRCS := test.c
 CFLAGS += -Iinc
 LD := gcc
 PRE_TEST :=
-BLACK_LIST_DIR += cmake-build-debug/
+BLACK_LIST_SRCS += cmake-build-debug/

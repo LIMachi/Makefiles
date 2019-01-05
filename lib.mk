@@ -1,4 +1,4 @@
-ifeq($(MAKEFILES_DIR), )
+ifeq ($(MAKEFILES_DIR), )
 MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 endif
 
@@ -6,7 +6,7 @@ include $(MAKEFILES_DIR)/common.mk
 
 .srcs:
 	printf "SRCS = " > .srcs
-	find . -type f | grep "\.c$$" | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" $(foreach V, $(TEST_SRCS), | grep -v "$(V)") $(foreach V, $(BLACK_LIST_DIR), | grep -v "$(V)") | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
+	find . -type f | grep "\.c$$" | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" $(foreach V, $(TEST_SRCS), | grep -v "$(V)") $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
 
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
