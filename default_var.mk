@@ -1,3 +1,4 @@
+MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 ARG_TEST +=
 OBJ_DIR := .obj
 TEST_SRCS := test.c
