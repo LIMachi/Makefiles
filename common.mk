@@ -43,10 +43,9 @@ CFLAGS += -O3
 endif
 endif
 
-.PHONY: all clean fclean re test FORCE
 .PRECIOUS: $(OBJ_DIR)/. $(OBJ_DIR)%/.
 
-all: $(NAME)
+all: $(NAME) FORCE
 
 $(OBJ_DIR)/.:
 	@echo Preparing $(OBJ_DIR) to hold object files
@@ -56,11 +55,11 @@ $(OBJ_DIR)%/.:
 	@echo Preparing subdir $(patsubst %/., %, $@) to hold object files
 	@mkdir -p $@
 
-re: | fclean all
-
-FORCE:
+re: FORCE | fclean all
 
 %.h:
 
-%: FORCE
+FORCE:
+
+%:
 	@#echo $@

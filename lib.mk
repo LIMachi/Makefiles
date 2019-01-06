@@ -10,7 +10,7 @@ include $(MAKEFILES_DIR)/common.mk
 
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
-test: test.bin
+test: test.bin FORCE
 	$(PRE_TEST) ./test.bin $(TEST_ARG)
 
 $(NAME): $(OBJS)
@@ -21,7 +21,7 @@ test.bin: $(TEST_OBJS) $(NAME) | $(CLIB) $(LDLIBS)
 	@echo Preparing temporary executable test.bin
 	@$(LD) $^ $| $(LDFLAGS) -o $@
 
-clean:
+clean: FORCE
 	@echo Removing $(OBJ_DIR) and test.bin
 	@$(RM) -rf $(OBJ_DIR)
 	@$(RM) -f test.bin
@@ -32,7 +32,7 @@ ifneq ($(CLIB), )
 endif
 endif
 
-fclean:
+fclean: FORCE
 	@echo Removing $(NAME), $(OBJ_DIR) and test.bin
 	@$(RM) -rf $(OBJ_DIR)
 	@$(RM) -f test.bin

@@ -1,5 +1,5 @@
 MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ARG_TEST +=
+TEST_ARG +=
 OBJ_DIR := .obj
 TEST_SRCS := test.c
 CFLAGS += -Iinc

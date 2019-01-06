@@ -12,7 +12,7 @@ $(NAME): $(OBJS) | $(CLIB) $(LDLIBS)
 	@echo Compiling binary $@
 	@$(LD) $^ $| $(LDFLAGS) -o $@
 
-clean:
+clean: FORCE
 	@echo Removing $(OBJ_DIR)
 	@$(RM) -rf $(OBJ_DIR)
 ifneq ($(RECURSIVE), )
@@ -22,7 +22,7 @@ ifneq ($(CLIB), )
 endif
 endif
 
-fclean:
+fclean: FORCE
 	@echo Removing $(NAME) and $(OBJ_DIR)
 	@$(RM) -rf $(OBJ_DIR)
 	@$(RM) -rf $(NAME)
