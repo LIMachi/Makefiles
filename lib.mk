@@ -6,7 +6,7 @@ include $(MAKEFILES_DIR)/common.mk
 
 .srcs:
 	printf "SRCS = " > .srcs
-	find . -type f | grep "\.c$$" | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" $(foreach V, $(TEST_SRCS), | grep -v "$(V)") $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
+	find . -type f | grep "\.c$$" | cut -f2- -d/ | grep -v " " $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
 
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
