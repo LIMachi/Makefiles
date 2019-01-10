@@ -6,7 +6,7 @@ include $(MAKEFILES_DIR)/common.mk
 
 .srcs:
 	printf "SRCS = " > .srcs
-	find . -type f | grep "\.c$$" | cut -f2- -d/ | grep -v " " $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
+	find . -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
 
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
@@ -33,10 +33,8 @@ endif
 endif
 
 fclean: FORCE
-	@echo Removing $(NAME), $(OBJ_DIR) and test.bin
-	@$(RM) -rf $(OBJ_DIR)
-	@$(RM) -f test.bin
-	@$(RM) -rf $(NAME)
+	@echo Removing $(NAME), $(OBJ_DIR), test.bin and .srcs
+	@$(RM) -rf $(OBJ_DIR) $(NAME) test.bin .srcs
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
 	@echo Recursive:

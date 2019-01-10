@@ -20,11 +20,12 @@ AR := $($(UNAME)_AR)
 endif
 
 ifeq ($(SRCS), )
-$(info no SRCS set, including .srcs)
+#$(info no SRCS set, including .srcs)
 include .srcs
 endif
 
 OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
+DEPS := $(patsubst %.c, $(DEP_DIR)/%.d, $(SRCS))
 
 ifneq ($(DEBUG), )
 PRE_TEST += valgrind
@@ -55,11 +56,16 @@ $(OBJ_DIR)%/.:
 	@echo Preparing subdir $(patsubst %/., %, $@) to hold object files
 	@mkdir -p $@
 
+$(DEP_DIR)/.:
+	@echo Preparing $(DEP_DIR) to hold dependency files
+	@mkdir -p $@
+
+$(DEP_DIR)%/.:
+	@echo Preparing subdir $(patsubst %/., %, $@) to hold dependency files
+	@mkdir -p $@
+
 re: FORCE | fclean all
 
-%.h:
+#%.h:
 
 FORCE:
-
-%:
-	@#echo $@
