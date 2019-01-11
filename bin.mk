@@ -18,7 +18,7 @@ clean: FORCE
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
 	@echo Recursive:
-	@$(foreach V, $(dir $(CLIB)), $(MAKE) -C $(V) --no-print-directory -j clean;)
+	@$(foreach V, $(dir $(CLIB)), $(MAKE) $(FORWARD) -C $(V) --no-print-directory -j clean;)
 endif
 endif
 
@@ -28,7 +28,7 @@ fclean: FORCE
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
 	@echo Recursive:
-	@$(foreach V, $(dir $(CLIB)), $(MAKE) -C $(V) --no-print-directory -j fclean;)
+	@$(foreach V, $(dir $(CLIB)), $(MAKE) $(FORWARD) -C $(V) --no-print-directory -j fclean;)
 endif
 endif
 

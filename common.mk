@@ -28,13 +28,19 @@ OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
 DEPS := $(patsubst %.c, $(DEP_DIR)/%.d, $(SRCS))
 
 ifneq ($(DEBUG), )
+FORWARD += DEBUG=1
 PRE_TEST += valgrind
 CFLAGS += -g
 endif
 
 ifneq ($(SANITIZE), )
+FORWARD += SANITIZE=1
 CFLAGS += -g -fsanitize=address
 LDFLAGS += -fsanitize=address
+endif
+
+ifneq ($(RECURSIVE), )
+FORWARD += RECURSIVE=1
 endif
 
 #if neither DEBUG nor SANITIZE is set
@@ -64,7 +70,9 @@ $(DEP_DIR)%/.:
 	@echo Preparing subdir $(patsubst %/., %, $@) to hold dependency files
 	@mkdir -p $@
 
-re: FORCE | fclean all
+re: FORCE
+	$(MAKE) $(FORWARD) fclean
+	$(MAKE) $(FORWARD) all
 
 #%.h:
 
