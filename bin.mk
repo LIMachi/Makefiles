@@ -12,6 +12,9 @@ $(NAME): $(OBJS) | $(CLIB) $(LDLIBS)
 	@echo Compiling binary $@
 	@$(LD) $^ $| $(LDFLAGS) -o $@
 
+test: $(NAME) FORCE
+	$(PRE_TEST) ./$(NAME) $(TEST_ARG)
+
 clean: FORCE
 	@echo Removing $(OBJ_DIR)
 	@$(RM) -rf $(OBJ_DIR)
