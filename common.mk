@@ -4,6 +4,7 @@ UNAME := $(shell uname)
 
 CFLAGS += -Wall -Wextra -Werror $($(UNAME)_CFLAGS)
 LDFLAGS += $($(UNAME)_LDFLAGS)
+LDLIBS += $($(UNAME)_LDLIBS)
 SRCS += $($(UNAME)_SRCS)
 TEST_SRCS += $($(UNAME)_TEST_SRCS)
 
