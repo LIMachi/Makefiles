@@ -77,4 +77,6 @@ re: FORCE
 
 #%.h:
 
+.PHONY: FORCE all re clean fclean
+
 FORCE:

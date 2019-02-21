@@ -26,8 +26,8 @@ endif
 endif
 
 fclean: FORCE
-	@echo Removing $(NAME), $(OBJ_DIR) and .srcs
-	@$(RM) -rf $(OBJ_DIR) $(NAME) .srcs
+	@echo Removing $(NAME) and $(OBJ_DIR)
+	@$(RM) -rf $(OBJ_DIR) $(NAME)
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
 	@echo Recursive:

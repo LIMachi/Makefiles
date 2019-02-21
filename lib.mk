@@ -10,6 +10,7 @@ include $(MAKEFILES_DIR)/common.mk
 
 TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 
+.PHONY: test
 test: test.bin FORCE
 	$(PRE_TEST) ./test.bin $(TEST_ARG)
 
@@ -33,8 +34,8 @@ endif
 endif
 
 fclean: FORCE
-	@echo Removing $(NAME), $(OBJ_DIR), test.bin and .srcs
-	@$(RM) -rf $(OBJ_DIR) $(NAME) test.bin .srcs
+	@echo Removing $(NAME), $(OBJ_DIR) and test.bin
+	@$(RM) -rf $(OBJ_DIR) $(NAME) test.bin
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
 	@echo Recursive:
