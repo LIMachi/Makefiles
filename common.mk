@@ -1,7 +1,5 @@
 .DEFAULT_GOAL := all
 
-UNAME := $(shell uname)
-
 CFLAGS += -Wall -Wextra -Werror $($(UNAME)_CFLAGS)
 LDFLAGS += $($(UNAME)_LDFLAGS)
 LDLIBS += $($(UNAME)_LDLIBS)
