@@ -14,6 +14,9 @@ TEST_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(TEST_SRCS))
 test: test.bin FORCE
 	$(PRE_TEST) ./test.bin $(TEST_ARG)
 
+CMake:
+	echo "cmake_minimum_required(VERSION 3.13)\nproject($(NAME))\nset(CMAKE_CXX_STANDARD 14)\ninclude_directories($(INC_DIR))\nadd_library($(NAME) $(SRCS))" > CMakeLists.txt
+
 $(NAME): $(OBJS)
 	@echo Adding objects to archive $@:
 	@$(AR) $(ARFLAGS) $@ $?

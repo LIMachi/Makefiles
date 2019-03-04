@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := all
 
-CFLAGS += -Wall -Wextra -Werror $($(UNAME)_CFLAGS)
+CFLAGS += -Wall -Wextra -Werror $($(UNAME)_CFLAGS) $(foreach V, $(INC_DIR), -I$(V))
+
 LDFLAGS += $($(UNAME)_LDFLAGS)
 LDLIBS += $($(UNAME)_LDLIBS)
 SRCS += $($(UNAME)_SRCS)

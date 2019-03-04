@@ -3,6 +3,7 @@ MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 TEST_ARG +=
 OBJ_DIR := .obj
 DEP_DIR := .dep
+INC_DIR := inc
 TEST_SRCS := ./test.c
 LD := gcc
 PRE_TEST :=
@@ -30,4 +31,4 @@ $(warning "non darwin system aren't supported for now")
 
 endif
 
-CFLAGS += -Iinc -I$(PACKAGE_MANAGER_INC)
+INC_DIR += inc $(PACKAGE_MANAGER_INC)

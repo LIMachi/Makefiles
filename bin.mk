@@ -12,6 +12,9 @@ $(NAME): $(OBJS) | $(CLIB) $(LDLIBS)
 	@echo Compiling binary $@
 	@$(LD) $^ $| $(LDFLAGS) -o $@
 
+CMake:
+	echo "cmake_minimum_required(VERSION 3.13)\nproject($(NAME))\nset(CMAKE_CXX_STANDARD 14)\ninclude_directories($(INC_DIR))\nadd_executable($(NAME) $(SRCS))" > CMakeLists.txt
+
 test: $(NAME) FORCE
 	$(PRE_TEST) ./$(NAME) $(TEST_ARG)
 
