@@ -20,6 +20,7 @@ CMake:
 $(NAME): $(OBJS)
 	@echo Adding objects to archive $@:
 	@$(AR) $(ARFLAGS) $@ $?
+	@touch $@
 
 test.bin: $(TEST_OBJS) $(NAME) | $(CLIB) $(LDLIBS)
 	@echo Preparing temporary executable test.bin
