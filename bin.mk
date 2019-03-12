@@ -8,9 +8,9 @@ include $(MAKEFILES_DIR)/common.mk
 	printf "SRCS = " > .srcs
 	find . -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> .srcs
 
-$(NAME): $(OBJS) | $(CLIB) $(LDLIBS)
+$(NAME): $(CLIB) $(OBJS) | $(LDLIBS)
 	@echo Compiling binary $@
-	@$(LD) $^ $| $(LDFLAGS) -o $@
+	@$(LD) $(OBJS) $(CLIB) $| $(LDFLAGS) -o $@
 
 CMake:
 	echo "cmake_minimum_required(VERSION 3.13)\nproject($(NAME))\nset(CMAKE_CXX_STANDARD 14)\ninclude_directories($(INC_DIR))\nadd_executable($(NAME) $(SRCS))" > CMakeLists.txt
