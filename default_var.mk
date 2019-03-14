@@ -3,7 +3,6 @@ MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 TEST_ARG +=
 OBJ_DIR := .obj
 DEP_DIR := .dep
-INC_DIR := inc
 TEST_SRCS := ./test.c
 LD := gcc
 PRE_TEST :=
