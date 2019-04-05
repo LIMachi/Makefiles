@@ -17,7 +17,7 @@ test: test.bin FORCE
 CMake:
 	echo "cmake_minimum_required(VERSION 3.13)\nproject($(NAME))\nset(CMAKE_CXX_STANDARD 14)\ninclude_directories($(INC_DIR))" > CMakeLists.txt
 	$(foreach V, $(CLIB), echo "add_subdirectory($(dir $(V)))" >> CMakeLists.txt;)
-	echo "add_library($(NAME) $(SRCS))" >> CMakeLists.txt
+	echo "add_library($(NAME) $(TEST_SRCS) $(SRCS))" >> CMakeLists.txt
 
 $(NAME): $(OBJS)
 	@echo Adding objects to archive $@:
