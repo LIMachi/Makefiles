@@ -29,7 +29,7 @@ DEPS := $(patsubst %.c, $(DEP_DIR)/%.d, $(SRCS))
 
 ifneq ($(DEBUG), )
 FORWARD += DEBUG=1
-PRE_TEST += valgrind
+PRE_TEST += #valgrind
 CFLAGS += -g
 endif
 
