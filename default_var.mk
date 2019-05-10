@@ -32,7 +32,8 @@ $(CMAKE):
 
 else ifeq ($(UNAME), Linux)
 #If Linux and pacman is installed
-ifneq ( "$(wildcard $(shell which pacman))", "" )
+ifneq ($(shell which pacman), )
+
 PACKAGE_MANAGER = sudo $(shell which pacman)
 PACKAGE_MANAGER_BIN = /usr/bin
 PACKAGE_MANAGER_LIB = /usr/lib
@@ -45,6 +46,19 @@ SDL2_MIXER_NAME = sdl2_mixer
 SDL2_IMAGE_NAME = sdl2_image
 SDL2_NET_NAME = sdl2_net
 
+else ifneq ($(shell which apt-get), )
+
+PACKAGE_MANAGER = sudo $(shell which apt-get)
+PACKAGE_MANAGER_BIN = /usr/bin
+PACKAGE_MANAGER_LIB = /usr/lib/x86_64-linux-gnu
+PACKAGE_MANAGER_INC = /usr/include
+PACKAGE_MANAGER_INSTALL_ARGUMENT = install
+
+SDL2_NAME = libsdl2-dev
+SDL2_TTF_NAME = libsdl2-ttf-dev
+SDL2_MIXER_NAME = libsdl2-mixer-dev
+SDL2_IMAGE_NAME = libsdl2-image-dev
+SDL2_NET_NAME = libsdl2-net-dev
 
 endif
 
