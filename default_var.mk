@@ -1,5 +1,63 @@
-UNAME := $(shell uname)
 MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+
+CC := gcc
+
+ifeq ($(OS),Windows_NT)
+CCFLAGS += -D WIN32
+HOST_OS := WINDOWS
+ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+CCFLAGS += -D AMD64
+HOST_ARCH := x86_64
+HOST_TARGET := win64
+else
+ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+CCFLAGS += -D AMD64
+HOST_ARCH := x86_64
+HOST_TARGET := win64
+endif
+ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+CCFLAGS += -D IA32
+HOST_ARCH := x86
+HOST_TARGET := win32
+endif
+endif
+else
+UNAME := $(shell uname -s)
+ifeq ($(UNAME),Linux)
+HOST_OS := LINUX
+HOST_TARGET := linux
+CCFLAGS += -D LINUX
+endif
+ifeq ($(UNAME),Darwin)
+$(warning missing darwinX target)
+#HOST_TARGET :=
+HOST_OS := OSX
+CCFLAGS += -D OSX
+endif
+UNAME_P := $(shell uname -p)
+ifeq ($(UNAME_P),x86_64)
+HOST_ARCH := x86_64
+CCFLAGS += -D AMD64
+endif
+ifneq ($(filter %86,$(UNAME_P)),)
+CCFLAGS += -D IA32
+HOST_ARCH := x86
+endif
+ifneq ($(filter arm%,$(UNAME_P)),)
+$(warning missing armvX arch)
+#HOST_ARCH :=
+CCFLAGS += -D ARM
+endif
+endif
+
+HOST := $(HOST_ARCH)-$(HOST_TARGET)-$(CC)
+
+ifeq ($(TARGET), )
+TARGET := $(HOST)
+endif
+
+
+
 TEST_ARG +=
 OBJ_DIR := .obj
 DEP_DIR := .dep
@@ -8,7 +66,7 @@ LD := gcc
 PRE_TEST :=
 BLACK_LIST_SRCS += cmake-build-debug/
 
-ifeq ($(UNAME), Darwin)
+ifeq ($(HOST_OS), OSX)
 
 PACKAGE_MANAGER_DIR = $(HOME)/.brew
 PACKAGE_MANAGER = $(HOME)/.brew/bin/brew
@@ -30,7 +88,7 @@ $(PACKAGE_MANAGER):
 $(CMAKE):
 	$(PACKAGE_MANAGER) install cmake
 
-else ifeq ($(UNAME), Linux)
+else ifeq ($(HOST_OS), LINUX)
 #If Linux and pacman is installed
 ifneq ($(shell which pacman), )
 
