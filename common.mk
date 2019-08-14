@@ -55,19 +55,19 @@ endif
 all: $(NAME) FORCE
 
 $(OBJ_DIR)/.:
-	@echo Preparing $(OBJ_DIR) to hold object files
+	@echo $(MAKEFILE_PATH): Preparing $(OBJ_DIR) to hold object files
 	@mkdir -p $@
 
 $(OBJ_DIR)%/.:
-	@echo Preparing subdir $(patsubst %/., %, $@) to hold object files
+	@echo $(MAKEFILE_PATH): Preparing subdir $(patsubst %/., %, $@) to hold object files
 	@mkdir -p $@
 
 $(DEP_DIR)/.:
-	@echo Preparing $(DEP_DIR) to hold dependency files
+	@echo $(MAKEFILE_PATH): Preparing $(DEP_DIR) to hold dependency files
 	@mkdir -p $@
 
 $(DEP_DIR)%/.:
-	@echo Preparing subdir $(patsubst %/., %, $@) to hold dependency files
+	@echo $(MAKEFILE_PATH): Preparing subdir $(patsubst %/., %, $@) to hold dependency files
 	@mkdir -p $@
 
 re: FORCE

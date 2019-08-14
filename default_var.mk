@@ -1,5 +1,6 @@
 UNAME := $(shell uname)
 MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+MAKEFILE_PATH := $(realpath $(dir $(word 1, $(MAKEFILE_LIST))))
 TEST_ARG +=
 OBJ_DIR := .obj
 DEP_DIR := .dep
