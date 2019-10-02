@@ -13,10 +13,10 @@ test: test.bin FORCE
 $(NAME): $(OBJS) | $(CLIB)
 ifneq ($(VERBOSE), )
 	@echo $(LOCAL_MAKEFILE): Adding objects to archive $@:
-	$(AR) $(ARFLAGS) $@ $? 2>1
+	$(AR) $(ARFLAGS) $@ $? 2>&1
 	@touch $@
 else
-	@$(AR) $(ARFLAGS) $@ $? 2>1
+	@$(AR) $(ARFLAGS) $@ $? 2>&1
 endif
 
 test.bin: $(TEST_OBJS) $(NAME) | $(CLIB) $(LDLIBS)
