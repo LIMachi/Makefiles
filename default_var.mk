@@ -56,11 +56,9 @@ ifeq ($(TARGET), )
 TARGET := $(HOST)
 endif
 
-
+ARFLAGS := r
 
 TEST_ARG +=
-OBJ_DIR := .obj
-DEP_DIR := .dep
 TEST_SRCS := ./test.c
 LD := gcc
 PRE_TEST :=
