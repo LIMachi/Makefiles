@@ -122,7 +122,9 @@ else
 endif
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
+ifneq ($(VERBOSE), )
 	@echo Recursive CMake:
+endif
 	@$(foreach V, $(dir $(CLIB)), $(MAKE) $(FORWARD) -C $(V) --no-print-directory -j CMake;)
 endif
 endif
@@ -162,10 +164,10 @@ endif
 
 mclean: FORCE
 ifneq ($(VERBOSE), )
-	@echo $(LOCAL_MAKEFILE): Removing $(MAKEFILE_FILES_DIR) and CMakeLists.txt
-	$(RM) -rf $(MAKEFILE_FILES_DIR) CMakeLists.txt
+	@echo $(LOCAL_MAKEFILE): Removing $(MAKEFILE_FILES_DIR), CMakeLists.txt cmake-build-debug and CMakeFiles
+	$(RM) -rf $(MAKEFILE_FILES_DIR) CMakeLists.txt cmake-build-debug CMakeFiles
 else
-	@$(RM) -rf $(MAKEFILE_FILES_DIR) CMakeLists.txt
+	@$(RM) -rf $(MAKEFILE_FILES_DIR) CMakeLists.txt cmake-build-debug CMakeFiles
 endif
 ifneq ($(RECURSIVE), )
 ifneq ($(CLIB), )
