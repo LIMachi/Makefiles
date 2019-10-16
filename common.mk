@@ -116,10 +116,12 @@ ifneq ($(VERBOSE), )
 	@echo $(LOCAL_MAKEFILE): preparing CMakeLists.txt
 	echo "cmake_minimum_required(VERSION 3.12)\nproject($(NAME))\nset(CMAKE_CXX_STANDARD 14)\ninclude_directories($(INC_DIR) $(CMAKE_INCLUDE_DIRECTORIES))" > CMakeLists.txt
 	$(foreach V, $(CLIB), echo "add_subdirectory($(dir $(V)) $(MAKEFILE_FILES_DIR))" >> CMakeLists.txt;)
+	$(foreach V, $(CMAKE_MODULES), echo "add_subdirectory($(V))" >> CMakeLists.txt;)
 	echo "add_library($(NAME) $(TEST_SRCS) $(SRCS))" >> CMakeLists.txt
 else
 	@echo "cmake_minimum_required(VERSION 3.12)\nproject($(NAME))\nset(CMAKE_CXX_STANDARD 14)\ninclude_directories($(INC_DIR) $(CMAKE_INCLUDE_DIRECTORIES))" > CMakeLists.txt
 	@$(foreach V, $(CLIB), echo "add_subdirectory($(dir $(V)) $(MAKEFILE_FILES_DIR))" >> CMakeLists.txt;)
+	@$(foreach V, $(CMAKE_MODULES), echo "add_subdirectory($(V))" >> CMakeLists.txt;)
 	@echo "add_library($(NAME) $(TEST_SRCS) $(SRCS))" >> CMakeLists.txt
 endif
 ifneq ($(RECURSIVE), )
