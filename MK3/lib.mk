@@ -9,7 +9,7 @@ ifneq ($(VERBOSE), )
 	$(AR) $(ARFLAGS) $@ $? 2>&1
 	touch $@
 else
-	@$(ECHO) $(LOCAL_MAKEFILE): Adding objects to archive $@
+	@$(ECHO) $(SNAME): Adding objects to archive $@
 	@$(AR) $(ARFLAGS) $@ $? 2>&1
 endif
 
@@ -17,6 +17,6 @@ test.bin: $(TEST_OBJS) $(SNAME) | $(CLIB) $(LDLIBS)
 ifneq ($(VERBOSE), )
 	$(LD) $^ $| $(LDFLAGS) -o $@
 else
-	@$(ECHO) $(LOCAL_MAKEFILE): Preparing temporary executable test.bin
+	@$(ECHO) $(SNAME): Preparing temporary executable test.bin
 	@$(LD) $^ $| $(LDFLAGS) -o $@
 endif

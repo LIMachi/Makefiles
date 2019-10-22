@@ -5,6 +5,7 @@ Print makefile progress
 import argparse
 import math
 import sys
+import shutil
 
 def get_progress_bar(numchars, fraction=None, percent=None):
   """
@@ -24,6 +25,7 @@ def get_progress_bar(numchars, fraction=None, percent=None):
   return ("█" * n_full) + blocks[i_partial] + (" " * n_empty)
 
 def main():
+  col = shutil.get_terminal_size((80,25)).columns - 40
   parser = argparse.ArgumentParser(description=__doc__)
   parser.add_argument("--stepno", type=int, required=True)
   parser.add_argument("--nsteps", type=int, required=True)
@@ -31,14 +33,17 @@ def main():
   args = parser.parse_args()
 
   nchars = int(math.log(args.nsteps, 10)) + 1
-  fmt_str = "\r[{:Xd}/{:Xd}]({:6.2f}%) ".replace("X", str(nchars))
+  fmt_str = "\r\r[{:Xd}/{:Xd}]({:6.2f}%) ".replace("X", str(nchars))
   progress = 100 * args.stepno / args.nsteps
   sys.stdout.write(fmt_str.format(args.stepno, args.nsteps, progress))
   sys.stdout.write(get_progress_bar(20, percent=progress))
   remainder_str = " ".join(args.remainder)
-  sys.stdout.write(" {:s}".format(remainder_str))
+  sys.stdout.write(" {:s}".format(remainder_str[:col]))
+  col = col - len(remainder_str[:col])
+  sys.stdout.write(" " * col)
   if args.stepno == args.nsteps:
     sys.stdout.write("\n")
+  sys.stdout.flush()
 
 if __name__ == "__main__":
   main()

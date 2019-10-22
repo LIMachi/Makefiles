@@ -41,6 +41,11 @@ $(.DEFAULT_GOAL): extra_names_recursion#and for good mesure, also add it to the 
 endif
 endif
 
+$(foreach V, $(filter $(SNAME)_%, $(.VARIABLES)), $(eval V2 = $(patsubst $(SNAME)_%, %, $(V)))$(if $(filter override, $(origin $(V))), $(eval $(V2) := $($(V))), $(eval $(V2) += $($(V)))))
+
+LD := clang
+CFLAGS += $(foreach V, $(INC_DIR), -I$(V)) -Wall -Wextra -Werror
+
 all: $(SNAME)
 
 re:
@@ -50,7 +55,7 @@ re:
 $(SNAME): $(BUILD_NAME)
 	@cp -f $< $@
 
-$(foreach V, $(filter $(SNAME)_%, $(.VARIABLES)), $(eval V2 = $(patsubst $(SNAME)_%, %, $(V)))$(if $(filter override, $(origin $(V))), $(eval $(V2) := $($(V))), $(eval $(V2) += $($(V)))))
+include $(MAKEFILES_DIR)/scripts.mk
 
 ifeq ($(SRCS), )
 ifneq ($(VERBOSE), )
@@ -61,9 +66,9 @@ else
 endif
 endif
 
-ifeq ($(SRCS), )
-$(error SRCS is not defined)
-endif
+#ifeq ($(SRCS), )
+#$(error SRCS is not defined)
+#endif
 
 OBJ_DIR := $(BUILD_DIR)/obj
 DEP_DIR := $(BUILD_DIR)/dep
@@ -76,7 +81,7 @@ $(BUILD_DIR)/.:
 ifneq ($(VERBOSE), )
 	mkdir -p $@
 else
-	@$(ECHO) $(LOCAL_MAKEFILE): Building main directory $@
+	@$(ECHO) $(SNAME): Building main directory $@
 	@mkdir -p $@
 endif
 
@@ -84,7 +89,7 @@ $(BUILD_DIR)%/.:
 ifneq ($(VERBOSE), )
 	mkdir -p $@
 else
-	@$(ECHO) $(LOCAL_MAKEFILE): Building sub directory $@
+	@$(ECHO) $(SNAME): Building sub directory $@
 	@mkdir -p $@
 endif
 

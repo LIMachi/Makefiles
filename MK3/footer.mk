@@ -6,7 +6,7 @@ T := $(shell $(MAKE) $(MAKECMDGOALS) --no-print-directory \
 	ECHO="COUNTTHIS" | grep -c "COUNTTHIS")
 N := x
 C = $(words $N)$(eval N := x $N)
-ECHO = sleep 0.02; python3 $(MAKEFILES_DIR)/echo_progress.py --stepno=$C --nsteps=$T
+ECHO = sleep 0.02; `which python3`.[3456789] $(MAKEFILES_DIR)/echo_progress.py --stepno=$C --nsteps=$T
 endif
 
 ifeq ($(filter clean fclean mclean, $(MAKECMDGOALS)), )
@@ -24,7 +24,7 @@ $(CLIB): $$(strip $$(call need_rebuild,$$(@D)))
 ifneq ($(VERBOSE), )
 	$(MAKE) -C $(@D) --no-print-directory -j
 else
-	@$(ECHO) $(LOCAL_MAKEFILE): Sub-library $@ needs rebuild
+	@$(ECHO) $(SNAME): Sub-library $@ needs rebuild
 	@$(MAKE) -C $(@D) --no-print-directory -j
 endif
 endif
@@ -36,7 +36,7 @@ ifneq ($(VERBOSE), )
 	mv -f $(DEP_DIR)/$*.Td $(DEP_DIR)/$*.d
 	touch $@
 else
-	@$(ECHO) $(LOCAL_MAKEFILE): Compiling object $@
+	@$(ECHO) $(SNAME): Compiling object for $<
 	@$(CC) $(CFLAGS) -MT $@ -MMD -MP -MF $(DEP_DIR)/$*.Td -c $< -o $@
 	@mv -f $(DEP_DIR)/$*.Td $(DEP_DIR)/$*.d
 	@touch $@
