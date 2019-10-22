@@ -1,19 +1,5 @@
-$(if $(NAME),,$(error Missing NAME definition))#make sure name is non null
-$(if $(filter file line, $(origin NAME)),,$(error Missing NAME definition))#make sure name was activelly set by the user via a makefile or command line
-
-EXTRA_NAMES := $(wordlist 2, $(words $(NAME)), $(NAME))#put extra names in a secondary variable for later processing
-SNAME := $(word 1, $(NAME))
-
-LOCAL_MAKEFILE := $(realpath $(firstword $(MAKEFILE_LIST)))#get the path of the CALLING makefile for recursion
 MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))#get the directory containing THIS makefile
-
-include $(MAKEFILES_DIR)/arch.mk
-
-BUILD_ROOT := $(dir $(LOCAL_MAKEFILE))build
-
-BUILD_DIR := $(BUILD_ROOT)/$(SNAME)/$(OS)
-
-BUILD_NAME := $(BUILD_DIR)/$(SNAME)
+include $(MAKEFILES_DIR)/vars.mk
 
 .PHONY: all FORCE re
 .DEFAULT_GOAL = all
@@ -41,11 +27,6 @@ $(.DEFAULT_GOAL): extra_names_recursion#and for good mesure, also add it to the 
 endif
 endif
 
-$(foreach V, $(filter $(SNAME)_%, $(.VARIABLES)), $(eval V2 = $(patsubst $(SNAME)_%, %, $(V)))$(if $(filter override, $(origin $(V))), $(eval $(V2) := $($(V))), $(eval $(V2) += $($(V)))))
-
-LD := clang
-CFLAGS += $(foreach V, $(INC_DIR), -I$(V)) -Wall -Wextra -Werror
-
 all: $(SNAME)
 
 re:
@@ -56,24 +37,6 @@ $(SNAME): $(BUILD_NAME)
 	@cp -f $< $@
 
 include $(MAKEFILES_DIR)/scripts.mk
-
-ifeq ($(SRCS), )
-ifneq ($(VERBOSE), )
-$(info $(LOCAL_MAKEFILE): no SRCS set, including/generating $(BUILD_DIR)/srcs)
-include $(BUILD_DIR)/srcs
-else
--include $(BUILD_DIR)/srcs #might silently fail
-endif
-endif
-
-#ifeq ($(SRCS), )
-#$(error SRCS is not defined)
-#endif
-
-OBJ_DIR := $(BUILD_DIR)/obj
-DEP_DIR := $(BUILD_DIR)/dep
-OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
-DEPS := $(patsubst %.c, $(DEP_DIR)/%.d, $(SRCS))
 
 .PRECIOUS: $(BUILD_DIR)/. $(BUILD_DIR)%/.
 

@@ -1,8 +1,10 @@
 #add defines to CFLAGS based on os and architecture, set $(OS) to WINDOWS/LINUX/OSX
+#UNAME will be set to Windows/Linux/Darwin
 
 ifeq ($(OS),Windows_NT)
 CFLAGS += -D WIN32
 OS := WINDOWS
+UNAME := Windows
 ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
 CFLAGS += -D AMD64
 else
@@ -34,3 +36,5 @@ ifneq ($(filter arm%,$(UNAME_P)),)
 CFLAGS += -D ARM
 endif
 endif
+
+$(foreach V, $(filter $(UNAME)_%, $(.VARIABLES)), $(eval V2 = $(patsubst $(UNAME)_%, %, $(V)))$(if $(filter override, $(origin $(V))), $(eval $(V2) := $($(V))), $(eval $(V2) += $($(V)))))
