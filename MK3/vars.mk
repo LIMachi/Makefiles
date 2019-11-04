@@ -16,6 +16,17 @@ BLACK_LIST_SRCS += cmake-build-debug/ $(foreach V, $(EXTRA_NAMES), $(V)/ )
 INC_DIR += inc
 FORWARD :=
 
+include $(MAKEFILES_DIR)/arch.mk
+
+BUILD_ROOT := $(dir $(LOCAL_MAKEFILE))build
+BUILD_DIR := $(BUILD_ROOT)/$(SNAME)/$(OS)
+BUILD_NAME := $(BUILD_DIR)/$(SNAME)
+
+OBJ_DIR := $(BUILD_DIR)/obj
+DEP_DIR := $(BUILD_DIR)/dep
+
+$(foreach V, $(filter $(SNAME)_%, $(.VARIABLES)), $(eval V2 = $(patsubst $(SNAME)_%, %, $(V)))$(if $(filter override, $(origin $(V))), $(eval $(V2) := $($(V))), $(eval $(V2) += $($(V)))))
+
 ifneq ($(VERBOSE), )
 FORWARD += VERBOSE=1
 ARFLAGS += v
@@ -43,17 +54,6 @@ ifeq ($(SANITIZE), )
 CFLAGS += -O3
 endif
 endif
-
-include $(MAKEFILES_DIR)/arch.mk
-
-BUILD_ROOT := $(dir $(LOCAL_MAKEFILE))build
-BUILD_DIR := $(BUILD_ROOT)/$(SNAME)/$(OS)
-BUILD_NAME := $(BUILD_DIR)/$(SNAME)
-
-OBJ_DIR := $(BUILD_DIR)/obj
-DEP_DIR := $(BUILD_DIR)/dep
-
-$(foreach V, $(filter $(SNAME)_%, $(.VARIABLES)), $(eval V2 = $(patsubst $(SNAME)_%, %, $(V)))$(if $(filter override, $(origin $(V))), $(eval $(V2) := $($(V))), $(eval $(V2) += $($(V)))))
 
 ifeq ($(SRCS), )
 ifeq ($(filter mclean, $(MAKECMDGOALS)), )
