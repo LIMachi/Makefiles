@@ -1,15 +1,6 @@
 #should be the last thing included (and body.mk should be included)
 
-ifndef ECHO
-T := $(shell $(MAKE) $(MAKECMDGOALS) --no-print-directory \
-	-nrRf $(firstword $(MAKEFILE_LIST)) \
-	ECHO="COUNTTHIS" | grep -c "COUNTTHIS")
-N := x
-C = $(words $N)$(eval N := x $N)
-ECHO = sleep 0.02; `which python3`.[3456789] $(MAKEFILES_DIR)/echo_progress.py --stepno=$C --nsteps=$T
-endif
-
-ifeq ($(filter clean fclean mclean, $(MAKECMDGOALS)), )
+ifeq ($(filter clean fclean mclean CMake, $(MAKECMDGOALS)), )
 
 need_rebuild = $(shell make --no-print-directory -j -q -s VERBOSE= RECURSIVE= -C $(1) || echo 'FORCE')
 

@@ -24,7 +24,7 @@ endif
 ifneq ($(DEBUG), )
 FORWARD += DEBUG=1
 PRE_TEST += #valgrind
-CFLAGS += -g
+CFLAGS += -g -DDEBUG=1
 endif
 
 ifneq ($(SANITIZE), )

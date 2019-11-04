@@ -1,5 +1,11 @@
 MAKEFILES_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))#get the directory containing THIS makefile
-include $(MAKEFILES_DIR)/vars.mk
+
+ifndef ECHO
+T := $(shell $(MAKE) $(MAKECMDGOALS) --no-print-directory -nrRf $(firstword $(MAKEFILE_LIST)) ECHO="echo COUNTTHIS" | grep -c "COUNTTHIS")
+N := x
+C = $(words $N)$(eval N := x $N)
+ECHO = sleep 0.02; `which python3`.[3456789] $(MAKEFILES_DIR)/echo_progress.py --stepno=$C --nsteps=$T
+endif
 
 .PHONY: all FORCE re
 .DEFAULT_GOAL = all
@@ -9,6 +15,8 @@ ifneq ($(words $(MAKECMDGOALS)),1)
 $(MAKECMDGOALS) all:
 	@make $@ --no-print-directory -f $(firstword $(MAKEFILE_LIST))
 else
+
+include $(MAKEFILES_DIR)/vars.mk
 
 ifneq ($(EXTRA_NAMES), )#this block add a new rule to the currently called rule to make the recursion for other names
 ifneq ($(MAKECMDGOALS), )
@@ -82,5 +90,9 @@ FORCE:
 ifneq ($(filter clean fclean mclean, $(MAKECMDGOALS)), )
 include $(MAKEFILES_DIR)/clean.mk
 endif
+
+-include $(dir $(LOCAL_MAKEFILE))rules.mk
+
+include $(MAKEFILES_DIR)/footer.mk
 
 endif
