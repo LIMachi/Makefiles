@@ -5,14 +5,17 @@ EXTRA_NAMES := $(wordlist 2, $(words $(NAME)), $(NAME))#put extra names in a sec
 SNAME := $(word 1, $(NAME))
 
 LOCAL_MAKEFILE := $(realpath $(firstword $(MAKEFILE_LIST)))#get the path of the CALLING makefile for recursion
+PWD := $(dir $(LOCAL_MAKEFILE))
 
 CC := gcc
 ARFLAGS := r
-TEST_SRCS := ./test.c
+TEST_SRCS := #./test.c
+CMAKELISTS := CMakeLists.txt
 LD := gcc
 AR := ar
 PRE_TEST :=
 BLACK_LIST_SRCS += cmake-build-debug/ $(foreach V, $(EXTRA_NAMES), $(V)/ )
+WHITE_LIST_SRCS :=
 INC_DIR += inc
 FORWARD :=
 
