@@ -15,7 +15,7 @@ LD := gcc
 AR := ar
 PRE_TEST :=
 BLACK_LIST_SRCS += cmake-build-debug/ $(foreach V, $(EXTRA_NAMES), $(V)/ )
-WHITE_LIST_SRCS :=
+WHITE_LIST_SRCS +=
 INC_DIR += inc
 FORWARD :=
 
