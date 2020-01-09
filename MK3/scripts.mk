@@ -3,14 +3,14 @@ ifneq ($(VERBOSE), )
 	@$(ECHO) preparing $(BUILD_DIR)/srcs
 	printf "SRCS = " > $(BUILD_DIR)/srcs
 ifeq ($(WHITE_LIST_SRCS),)
-	find . -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(WHITE_LIST_SRCS), | grep "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> $(BUILD_DIR)/srcs
+	find . -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> $(BUILD_DIR)/srcs
 else
 	$(foreach W, $(WHITE_LIST_SRCS), find $W -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       $W\//" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> $(BUILD_DIR)/srcs;)
 endif
 else
 	@printf "SRCS = " > $(BUILD_DIR)/srcs
 ifeq ($(WHITE_LIST_SRCS),)
-	@find . -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(WHITE_LIST_SRCS), | grep "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> $(BUILD_DIR)/srcs
+	@find . -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       /" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> $(BUILD_DIR)/srcs
 else
 	@$(foreach W, $(WHITE_LIST_SRCS), find $W -type f | grep "\.c$$" $(foreach V, $(BLACK_LIST_SRCS), | grep -v "$(V)") $(foreach V, $(TEST_SRCS), | grep -v "^$(V)$$") | cut -f2- -d/ | grep -v " " | sed "s/^/       $W\//" | sed "s/$$/ \\\\/" | sed "1s/^       //" | sed "$$ s/..$$//" >> $(BUILD_DIR)/srcs;)
 endif
