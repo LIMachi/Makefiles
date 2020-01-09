@@ -23,7 +23,7 @@ include $(MAKEFILES_DIR)/arch.mk
 
 BUILD_ROOT := $(dir $(LOCAL_MAKEFILE))build
 BUILD_DIR := $(BUILD_ROOT)/$(SNAME)/$(OS)
-BUILD_NAME := $(BUILD_DIR)/$(SNAME)
+BUILD_NAME := $(BUILD_DIR)/$(notdir $(SNAME))
 
 OBJ_DIR := $(BUILD_DIR)/obj
 DEP_DIR := $(BUILD_DIR)/dep
