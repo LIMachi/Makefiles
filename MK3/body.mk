@@ -64,14 +64,20 @@ else
 	@mkdir -p $@
 endif
 
+$(info pre assign: $(TARGET_TYPE))
+
 TARGET_TYPE := $(word 1, $(filter bin lib, $(TARGET_TYPE)))#the following block make sure [the value of target_type is valid, and otherwise use the extention of name to evaluate its type
+$(info post assign: $(TARGET_TYPE) | $(NAME) - $(suffix $(NAME)))
+
 ifeq ($(TARGET_TYPE), )
-ifneq ($(filter .a, $(suffix $(NAME))), )
+ifneq ($(filter .a, $(suffix $(SNAME))), )
 TARGET_TYPE := lib
 else
 TARGET_TYPE := bin
 endif
 endif
+
+$(info winner: $(TARGET_TYPE))
 
 ifeq ($(TARGET_TYPE), bin)
 include $(MAKEFILES_DIR)/bin.mk
