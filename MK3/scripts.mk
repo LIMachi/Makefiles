@@ -20,6 +20,10 @@ CMAKE_INCLUDE_DIRECTORIES := $(shell echo | clang -Wp,-v -xc - 2>&1 | grep " /" 
 
 .PHONY: CMake $(dir $(abspath $(SNAME)))CMakeLists.txt
 
+resource: | $(BUILD_DIR)/.
+	rm -rf $(dir $(abspath $(SNAME)))CMakeLists.txt $(BUILD_DIR)/srcs
+	@make --no-print-directory -f $(LOCAL_MAKEFILE) CMake
+
 CMake: $(dir $(abspath $(SNAME)))CMakeLists.txt
 
 $(dir $(abspath $(SNAME)))CMakeLists.txt:
